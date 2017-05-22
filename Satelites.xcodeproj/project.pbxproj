@@ -47,6 +47,9 @@
 		1B85BB0C1ED385B60024EA16 /* SatelitesUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SatelitesUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B85BB101ED385B60024EA16 /* SatelitesUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SatelitesUITests.swift; sourceTree = "<group>"; };
 		1B85BB121ED385B60024EA16 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		43E82DC5A10BBEDD9D669D16 /* libPods-Satelites.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Satelites.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AE9D87858403EE056323A4E7 /* Pods-Satelites.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Satelites.release.xcconfig"; path = "Pods/Target Support Files/Pods-Satelites/Pods-Satelites.release.xcconfig"; sourceTree = "<group>"; };
+		C778490FB6D7C772DE509D90 /* Pods-Satelites.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Satelites.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Satelites/Pods-Satelites.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +84,8 @@
 				1B85BB041ED385B60024EA16 /* SatelitesTests */,
 				1B85BB0F1ED385B60024EA16 /* SatelitesUITests */,
 				1B85BAEE1ED385B60024EA16 /* Products */,
+				3EB15D14B0A85B3D7A4A02EB /* Pods */,
+				CE47F97D72D6C2232BF9F179 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -125,6 +130,23 @@
 			path = SatelitesUITests;
 			sourceTree = "<group>";
 		};
+		3EB15D14B0A85B3D7A4A02EB /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				C778490FB6D7C772DE509D90 /* Pods-Satelites.debug.xcconfig */,
+				AE9D87858403EE056323A4E7 /* Pods-Satelites.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		CE47F97D72D6C2232BF9F179 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				43E82DC5A10BBEDD9D669D16 /* libPods-Satelites.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -132,9 +154,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1B85BB151ED385B60024EA16 /* Build configuration list for PBXNativeTarget "Satelites" */;
 			buildPhases = (
+				24C1D6BF202480F85208C608 /* [CP] Check Pods Manifest.lock */,
 				1B85BAE91ED385B60024EA16 /* Sources */,
 				1B85BAEA1ED385B60024EA16 /* Frameworks */,
 				1B85BAEB1ED385B60024EA16 /* Resources */,
+				6C96EB875C85D5A871F1D761 /* [CP] Embed Pods Frameworks */,
+				54F359D46371B8EFFB540043 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -256,6 +281,54 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		24C1D6BF202480F85208C608 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		54F359D46371B8EFFB540043 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Satelites/Pods-Satelites-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		6C96EB875C85D5A871F1D761 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Satelites/Pods-Satelites-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		1B85BAE91ED385B60024EA16 /* Sources */ = {
@@ -415,10 +488,12 @@
 		};
 		1B85BB161ED385B60024EA16 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C778490FB6D7C772DE509D90 /* Pods-Satelites.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = K7HSPKEH7V;
 				INFOPLIST_FILE = Satelites/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.ypicoleal.Satelites;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -428,10 +503,12 @@
 		};
 		1B85BB171ED385B60024EA16 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = AE9D87858403EE056323A4E7 /* Pods-Satelites.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = K7HSPKEH7V;
 				INFOPLIST_FILE = Satelites/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.ypicoleal.Satelites;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -516,6 +593,7 @@
 				1B85BB171ED385B60024EA16 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		1B85BB181ED385B60024EA16 /* Build configuration list for PBXNativeTarget "SatelitesTests" */ = {
 			isa = XCConfigurationList;
@@ -524,6 +602,7 @@
 				1B85BB1A1ED385B60024EA16 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		1B85BB1B1ED385B60024EA16 /* Build configuration list for PBXNativeTarget "SatelitesUITests" */ = {
 			isa = XCConfigurationList;
@@ -532,6 +611,7 @@
 				1B85BB1D1ED385B60024EA16 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
