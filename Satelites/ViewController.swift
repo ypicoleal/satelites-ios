@@ -9,15 +9,23 @@
 import UIKit
 import GoogleMaps
 
-class ViewController: UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+class ViewController: UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate, CLLocationManagerDelegate {
     
     @IBOutlet weak var imageTake: UIImageView!
     
     var imagePicker: UIImagePickerController!
     
+    var mapsView: GMSMapView!
+    
+    var locationManager = CLLocationManager()
+    var didFinfMyLocation = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        locationManager.delegate = self
+        locationManager.requestWhenInUseAuthorization()
+        //
     }
 
     override func didReceiveMemoryWarning() {
@@ -28,17 +36,19 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
     override func loadView() {
         // Create a GMSCameraPosition that tells the map to display the
         // coordinate -33.86,151.20 at zoom level 6.
-        let camera = GMSCameraPosition.camera(withLatitude: -33.86, longitude: 151.20, zoom: 6.0)
-        let mapView = GMSMapView.map(withFrame: CGRect.zero, camera: camera)
-        mapView.isMyLocationEnabled = true
-        view = mapView
+        let camera = GMSCameraPosition.camera(withLatitude: 10.400196, longitude: -75.502797, zoom: 12.0)
+        mapsView = GMSMapView.map(withFrame: CGRect.zero, camera: camera)
+        mapsView.isMyLocationEnabled = true
+        view = mapsView
         
         // Creates a marker in the center of the map.
         let marker = GMSMarker()
-        marker.position = CLLocationCoordinate2D(latitude: -33.86, longitude: 151.20)
-        marker.title = "Sydney"
+        marker.position = CLLocationCoordinate2D(latitude: 10.400196, longitude: -75.502797)
+        marker.title = "Ustes esta aqui"
         marker.snippet = "Australia"
-        marker.map = mapView
+        marker.map = mapsView
+        
+        mapsView.addObserver(self, forKeyPath: "myLocation", options: NSKeyValueObservingOptions.new, context: nil)
     }
     
     @IBAction func addReport(_ sender: UIBarButtonItem) {
@@ -72,6 +82,21 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
         imagePicker.dismiss(animated: true, completion: nil)
         let image = info[UIImagePickerControllerOriginalImage] as? UIImage
         print(image?.accessibilityIdentifier ?? "tales pascuales")
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        if status == CLAuthorizationStatus.authorizedWhenInUse {
+            mapsView.isMyLocationEnabled = true
+            print("Location enabled")
+        }
+    }
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if !didFinfMyLocation {
+            let myLocation: CLLocation = change![.newKey] as! CLLocation
+            mapsView.camera = GMSCameraPosition.camera(withTarget: myLocation.coordinate, zoom: 10.0)
+            didFinfMyLocation = true
+        }
     }
 }
 
