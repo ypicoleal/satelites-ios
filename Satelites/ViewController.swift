@@ -17,6 +17,8 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
     
     var mapsView: GMSMapView!
     
+    let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.whiteLarge)
+    
     var locationManager = CLLocationManager()
     var didFinfMyLocation = false
     
@@ -25,7 +27,6 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
         
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
-        //
     }
 
     override func didReceiveMemoryWarning() {
@@ -34,21 +35,17 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
     }
 
     override func loadView() {
-        // Create a GMSCameraPosition that tells the map to display the
-        // coordinate -33.86,151.20 at zoom level 6.
         let camera = GMSCameraPosition.camera(withLatitude: 10.400196, longitude: -75.502797, zoom: 12.0)
         mapsView = GMSMapView.map(withFrame: CGRect.zero, camera: camera)
         mapsView.isMyLocationEnabled = true
         view = mapsView
         
-        // Creates a marker in the center of the map.
-        let marker = GMSMarker()
-        marker.position = CLLocationCoordinate2D(latitude: 10.400196, longitude: -75.502797)
-        marker.title = "Ustes esta aqui"
-        marker.snippet = "Australia"
-        marker.map = mapsView
-        
         mapsView.addObserver(self, forKeyPath: "myLocation", options: NSKeyValueObservingOptions.new, context: nil)
+        
+        activityIndicator.center = self.view.center
+        activityIndicator.startAnimating()
+        
+        view.addSubview(activityIndicator)
     }
     
     @IBAction func addReport(_ sender: UIBarButtonItem) {
@@ -77,11 +74,84 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
         }
     }
     
+    func send(_ image: UIImage) {
+        
+        print("Sending image")
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        
+        let imageData = UIImagePNGRepresentation(image)
+        
+        let request = NSMutableURLRequest(url: NSURL(string:"http://104.236.33.228:8080/basureros/reportar/")! as URL)
+        
+        request.httpMethod = "POST"
+        
+        let boundary = NSString(format: "---------------------------14737809831466499882746641449")
+        let contentType = NSString(format: "multipart/form-data; boundary=%@",boundary)
+        
+        request.addValue(contentType as String, forHTTPHeaderField: "Content-Type")
+        
+        let body = NSMutableData()
+        
+        // Latitud
+        body.append(NSString(format: "\r\n--%@\r\n",boundary).data(using: String.Encoding.utf8.rawValue)!)
+        body.append(NSString(format:"Content-Disposition: form-data; name=\"latitude\"\r\n\r\n").data(using: String.Encoding.utf8.rawValue)!)
+        body.append((mapsView.myLocation?.coordinate.latitude.description.data(using: String.Encoding.utf8, allowLossyConversion: true)!)!)
+        
+        // Longitud
+        body.append(NSString(format: "\r\n--%@\r\n",boundary).data(using: String.Encoding.utf8.rawValue)!)
+        body.append(NSString(format:"Content-Disposition: form-data; name=\"longitude\"\r\n\r\n").data(using: String.Encoding.utf8.rawValue)!)
+        body.append((mapsView.myLocation?.coordinate.longitude.description.data(using: String.Encoding.utf8, allowLossyConversion: true)!)!)
+        
+        // Image
+        body.append(NSString(format: "\r\n--%@\r\n", boundary).data(using: String.Encoding.utf8.rawValue)!)
+        body.append(NSString(format:"Content-Disposition: form-data; name=\"profile_img\"; filename=\"img.jpg\"\\r\n").data(using: String.Encoding.utf8.rawValue)!)
+        body.append(NSString(format: "Content-Type: application/octet-stream\r\n\r\n").data(using: String.Encoding.utf8.rawValue)!)
+        body.append(imageData!)
+        body.append(NSString(format: "\r\n--%@\r\n", boundary).data(using: String.Encoding.utf8.rawValue)!)
+        
+        request.httpBody = body as Data
+        
+        let task =  URLSession.shared.dataTask(with: request as URLRequest,
+                                                                     completionHandler: {
+                                                                        (data, response, error) -> Void in
+                                                                        if let data = data {
+                                                                            
+                                                                            // You can print out response object
+                                                                            print("******* response = \(String(describing: response))")
+                                                                            
+                                                                            print(data.count)
+                                                                            // you can use data here
+                                                                            
+                                                                            // Print out reponse body
+                                                                            let responseString = NSString(data: data, encoding: String.Encoding.utf8.rawValue)
+                                                                            print("****** response data = \(responseString!)")
+                                                                            
+                                                                            
+                                                                            
+                                                                            DispatchQueue.main.async(execute: {
+                                                                                //self.myActivityIndicator.stopAnimating()
+                                                                                //self.imageView.image = nil;
+                                                                                let alert = UIAlertController(title: "Reporte de basurero", message: "Reporte enviado con exito", preferredStyle: UIAlertControllerStyle.alert)
+                                                                                alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.default, handler: nil))
+                                                                                self.present(alert, animated: true, completion: nil)
+                                                                                UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                                                                            });
+                                                                            
+                                                                        } else if let error = error {
+                                                                            print(error.localizedDescription)
+                                                                        }
+        })
+        task.resume()
+
+    }
+    
+    
+    
     //MARK: - Done image capture here
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         imagePicker.dismiss(animated: true, completion: nil)
         let image = info[UIImagePickerControllerOriginalImage] as? UIImage
-        print(image?.accessibilityIdentifier ?? "tales pascuales")
+        send(image!)
     }
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
@@ -94,7 +164,7 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if !didFinfMyLocation {
             let myLocation: CLLocation = change![.newKey] as! CLLocation
-            mapsView.camera = GMSCameraPosition.camera(withTarget: myLocation.coordinate, zoom: 10.0)
+            mapsView.camera = GMSCameraPosition.camera(withTarget: myLocation.coordinate, zoom: 16.0)
             didFinfMyLocation = true
         }
     }

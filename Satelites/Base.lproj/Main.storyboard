@@ -23,7 +23,7 @@
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
                     <navigationItem key="navigationItem" title="Reportar basurero" id="UoO-Qr-Wdx">
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="zDo-tM-lMM">
+                        <barButtonItem key="rightBarButtonItem" systemItem="camera" id="zDo-tM-lMM">
                             <connections>
                                 <action selector="addReport:" destination="BYZ-38-t0r" id="Bmm-XA-rTs"/>
                             </connections>
