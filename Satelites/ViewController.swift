@@ -2,7 +2,7 @@
 //  ViewController.swift
 //  Satelites
 //
-//  Created by Exile Soluciones Tecnológicas on 22/05/17.
+//  Created by Yamid Pico Leal on 22/05/17.
 //  Copyright © 2017 Yamid Pico leal. All rights reserved.
 //
 
@@ -15,7 +15,11 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
     
     var imagePicker: UIImagePickerController!
     
+    @IBOutlet weak var mapContainer: UIView!
+    
     var mapsView: GMSMapView!
+    
+    @IBOutlet weak var reportButton: UIBarButtonItem!
     
     let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.whiteLarge)
     
@@ -27,25 +31,22 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
         
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
+        activityIndicator.center = self.view.center
+        activityIndicator.color = UIColor.darkGray
+        
+        let camera = GMSCameraPosition.camera(withLatitude: 10.400196, longitude: -75.502797, zoom: 12.0)
+        mapsView = GMSMapView.map(withFrame: view.frame, camera: camera)
+        mapContainer.addSubview(mapsView)
+        
+        mapsView.addObserver(self, forKeyPath: "myLocation", options: NSKeyValueObservingOptions.new, context: nil)
+        
+        view.addSubview(activityIndicator)
+        
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-    }
-
-    override func loadView() {
-        let camera = GMSCameraPosition.camera(withLatitude: 10.400196, longitude: -75.502797, zoom: 12.0)
-        mapsView = GMSMapView.map(withFrame: CGRect.zero, camera: camera)
-        mapsView.isMyLocationEnabled = true
-        view = mapsView
-        
-        mapsView.addObserver(self, forKeyPath: "myLocation", options: NSKeyValueObservingOptions.new, context: nil)
-        
-        activityIndicator.center = self.view.center
-        activityIndicator.startAnimating()
-        
-        view.addSubview(activityIndicator)
     }
     
     @IBAction func addReport(_ sender: UIBarButtonItem) {
@@ -78,6 +79,8 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
         
         print("Sending image")
         UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        activityIndicator.startAnimating()
+        reportButton.isEnabled = false
         
         let imageData = UIImagePNGRepresentation(image)
         
@@ -129,10 +132,10 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
                                                                             
                                                                             
                                                                             DispatchQueue.main.async(execute: {
-                                                                                //self.myActivityIndicator.stopAnimating()
-                                                                                //self.imageView.image = nil;
+                                                                                self.activityIndicator.stopAnimating()
+                                                                                self.reportButton.isEnabled = true
                                                                                 let alert = UIAlertController(title: "Reporte de basurero", message: "Reporte enviado con exito", preferredStyle: UIAlertControllerStyle.alert)
-                                                                                alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.default, handler: nil))
+                                                                                alert.addAction(UIAlertAction(title: "Cerrar", style: UIAlertActionStyle.default, handler: nil))
                                                                                 self.present(alert, animated: true, completion: nil)
                                                                                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
                                                                             });
